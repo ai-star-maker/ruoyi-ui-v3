@@ -1,44 +1,44 @@
 import request from '@/utils/request'
 
 // 查询主题配置列表
-export function listConfig(query) {
+export function listThemeConfig(query) {
   return request({
-    url: '/cms/config/list',
+    url: '/cms/themeConfig/list',
     method: 'get',
     params: query
   })
 }
 
 // 查询主题配置详细
-export function getConfig(configId) {
+export function getThemeConfig(configId) {
   return request({
-    url: '/cms/config/' + configId,
+    url: '/cms/themeConfig/' + configId,
     method: 'get'
   })
 }
 
 // 新增主题配置
-export function addConfig(data) {
+export function addThemeConfig(data) {
   return request({
-    url: '/cms/config',
+    url: '/cms/themeConfig',
     method: 'post',
     data: data
   })
 }
 
 // 修改主题配置
-export function updateConfig(data) {
+export function updateThemeConfig(data) {
   return request({
-    url: '/cms/config',
+    url: '/cms/themeConfig',
     method: 'put',
     data: data
   })
 }
 
 // 删除主题配置
-export function delConfig(configId) {
+export function delThemeConfig(configId) {
   return request({
-    url: '/cms/config/' + configId,
+    url: '/cms/themeConfig/' + configId,
     method: 'delete'
   })
 }

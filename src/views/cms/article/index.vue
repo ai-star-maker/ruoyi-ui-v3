@@ -1,20 +1,26 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="站点编码" prop="siteCode">
-        <el-input
-          v-model="queryParams.siteCode"
-          placeholder="请输入站点编码"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+      <el-form-item label="站点编码" prop="siteCode" style="width: 250px">
+        <el-select v-model="queryParams.siteCode"  @change="getTreeselect" placeholder="请输入站点编码">
+          <el-option
+            v-for="site in sites"
+            :key="site.siteCode"
+            :label="site.siteCode"
+            :value="site.siteCode"
+          ></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="栏目编码" prop="categoryCode">
-        <el-input
+      <el-form-item label="栏目编码" prop="categoryCode" style="width: 250px">
+        <el-tree-select
           v-model="queryParams.categoryCode"
+          :data="categoryOptions"
+          :props="{ value: 'categoryCode', label: 'categoryName', children: 'children' }"
+          :default-expand-all="true"
+          value-key="categoryCode"
           placeholder="请输入栏目编码"
-          clearable
-          @keyup.enter="handleQuery"
+          @node-click="categoryTreeClick"
+          check-strictly
         />
       </el-form-item>
       <el-form-item label="内容标题" prop="title">
@@ -113,12 +119,27 @@
         <el-row>
         <el-col :span="12">
           <el-form-item label="站点编码" prop="siteCode">
-            <el-input v-model="form.siteCode" placeholder="请输入站点编码" />
+            <el-select v-model="form.siteCode" @change="getTreeselect" placeholder="请输入站点编码">
+              <el-option
+                v-for="site in sites"
+                :key="site.siteCode"
+                :label="site.siteCode"
+                :value="site.siteCode"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
         <el-form-item label="栏目编码" prop="categoryCode">
-          <el-input v-model="form.categoryCode" placeholder="请输入栏目编码" />
+          <el-tree-select
+              v-model="form.categoryCode"
+              :data="categoryOptions"
+              :props="{ value: 'categoryCode', label: 'categoryName', children: 'children' }"
+              value-key="categoryCode"
+              placeholder="请选择栏目编码"
+              check-strictly
+              @node-click="categoryTreeClick"
+            />
         </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -226,7 +247,11 @@
 
 <script setup name="Article">
 import { listArticle, getArticle, delArticle, addArticle, updateArticle } from "@/api/cms/article"
+import useCmsStore from '@/store/modules/cms'
+import { getSiteCategoryTree } from "@/utils/cms"
 
+const cmsStore = useCmsStore()
+const { sites } = storeToRefs(cmsStore)
 const { proxy } = getCurrentInstance()
 const { sys_yes_no, sys_normal_disable } = proxy.useDict('sys_yes_no', 'sys_normal_disable')
 
@@ -239,6 +264,7 @@ const single = ref(true)
 const multiple = ref(true)
 const total = ref(0)
 const title = ref("")
+const categoryOptions = ref([])
 
 const data = reactive({
   form: {},
@@ -275,6 +301,21 @@ function getList() {
     total.value = response.total
     loading.value = false
   })
+}
+
+/** 查询栏目管理下拉树结构 */
+function getTreeselect(siteCode_) {
+  categoryOptions.value = []
+  categoryOptions.value.push(getSiteCategoryTree(siteCode_))
+}
+
+/** 栏目树点击事件处理 */
+function categoryTreeClick(data, node, vm) {
+  console.log("categoryTreeClick", data, node, vm, data.siteCode)
+  if (data && data.siteCode) {
+    queryParams.value.siteCode = data.siteCode;
+    form.value.siteCode = data.siteCode;
+  }
 }
 
 // 取消按钮
@@ -323,6 +364,7 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   proxy.resetForm("queryRef")
+  getTreeselect()
   handleQuery()
 }
 
@@ -391,4 +433,6 @@ function handleExport() {
 }
 
 getList()
+getTreeselect()
+
 </script>

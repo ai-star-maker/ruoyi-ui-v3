@@ -2,12 +2,14 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="主题名称" prop="themeName">
-        <el-input
-          v-model="queryParams.themeName"
-          placeholder="请输入主题名称"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+        <el-select v-model="queryParams.themeName" style="width: 200px">
+          <el-option
+            v-for="item in themeOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="主题作者" prop="themeAuthor">
         <el-input
@@ -70,7 +72,7 @@
       <el-table-column label="主题编号" align="center" prop="themeId" />
       <el-table-column label="主题名称" align="center" prop="themeName" >
         <template #default="scope">
-            <router-link :to="'/cms/themeconfig/' + scope.row.themeId" class="link-type">
+            <router-link :to="'/cms/themeConfig/index/' + scope.row.themeName" class="link-type">
               <span>{{ scope.row.themeName }}</span>
             </router-link>
         </template>        
@@ -86,6 +88,11 @@
       <el-table-column label="是否启用" align="center" prop="themeEnabled">
         <template #default="scope">
           <dict-tag :options="sys_yes_no" :value="scope.row.themeEnabled"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+        <template #default="scope">
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -162,7 +169,7 @@
           <!-- <template #default="scope">
             <el-radio-group v-model="scope.row.themeName"> 
               <el-radio 
-                v-for="theme in themes" 
+                v-for="theme in themeOptions" 
                 :key="theme.value" 
                 :value="theme.value"
               >
@@ -198,7 +205,7 @@ const cmsStore = useCmsStore()
  * themes解构出来是空 ？
  */
 const { sites } = storeToRefs(cmsStore)
-const themes = ref([])
+const themeOptions = ref([])
 
 const themeList = ref([])
 const open = ref(false)
@@ -254,7 +261,7 @@ function getList() {
         themeName: element.theme})
     });
     cmsStore.themes.forEach(element => {
-      themes.value.push({value: element.themeName, label: element.themeName})
+      themeOptions.value.push({value: element.themeName, label: element.themeName})
     });
   }
 }

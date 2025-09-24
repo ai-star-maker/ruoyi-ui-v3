@@ -1,13 +1,15 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="站点编码" prop="siteCode">
-        <el-input
-          v-model="queryParams.siteCode"
-          placeholder="请输入站点编码"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+      <el-form-item label="站点编码" prop="siteCode" style="width: 250px">
+        <el-select v-model="queryParams.siteCode"  @change="handleQuery" placeholder="请输入站点编码">
+          <el-option
+            v-for="site in sites"
+            :key="site.siteCode"
+            :label="site.siteCode"
+            :value="site.siteCode"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="关键字" prop="keyword">
         <el-input
@@ -121,6 +123,10 @@
 
 <script setup name="Search">
 import { listSearch, getSearch, delSearch, addSearch, updateSearch } from "@/api/cms/search"
+import useCmsStore from '@/store/modules/cms'
+
+const cmsStore = useCmsStore()
+const { sites } = storeToRefs(cmsStore)
 
 const { proxy } = getCurrentInstance()
 

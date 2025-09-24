@@ -1,4 +1,5 @@
 import useCmsStore from '@/store/modules/cms'
+import { handleTree } from '@/utils/ruoyi'
 
 export function initSite(path) {
   const cmsStore = useCmsStore()
@@ -76,16 +77,31 @@ export function getCategoryInfo(categoryCode) {
 }
 
 /**
- * 根据siteCode返回栏目列表，如果是空返回所有的
+ * 根据siteCode返回栏目列表，如果是空返回所有的栏目
  * @param {*} siteCode 
  * @returns 
  */
 export function getSiteCategory(siteCode) {
   let cats = [];
   for (let site of useCmsStore().sites) {
-    if (siteCode == null || siteCode == site.siteCode ) cats = cats.concat(site.categories);
+    if (siteCode == null || siteCode == site.siteCode ) {
+      //深拷贝，否则handleTree时store.sites.category的child会变化，并且多次执行child会重复增加
+      cats = cats.concat(JSON.parse(JSON.stringify(site.categories)));
+    }
   }
   return cats;
+}
+
+/**
+ * 根据siteCode返回栏目树，如果是空返回所有的栏目树
+ * @param {*} siteCode 
+ * @returns 
+ */
+export function getSiteCategoryTree(siteCode) {
+  let cats = getSiteCategory(siteCode);
+  const data = { categoryCode: 0, categoryName: '顶级节点', children: [] }
+  data.children = handleTree(cats, "categoryCode", "parentCode")
+  return data;
 }
 
 /**

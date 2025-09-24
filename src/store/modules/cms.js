@@ -1,5 +1,5 @@
 import { listSiteAndCategory } from "@/api/cms/site";
-import { listTheme } from "@/api/cms/theme"
+import { listThemeAndConfig } from "@/api/cms/theme"
 
 const useCmsStore = defineStore(
   'cms',
@@ -27,7 +27,7 @@ const useCmsStore = defineStore(
             this.sites = sites
             //console.log("store.cms.GetSitesInfo return ", sites)
 
-            listTheme({themeEnabled: "Y"}).then(res => {
+            listThemeAndConfig({themeEnabled: "Y"}).then(res => {
               this.themes = res.rows;
               //console.log("store.cms.GetSitesInfo listTheme return ", this.themes)
               resolve(res)

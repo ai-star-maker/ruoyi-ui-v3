@@ -2,12 +2,14 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="站点编码" prop="siteCode">
-        <el-input
-          v-model="queryParams.siteCode"
-          placeholder="请输入站点编码"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+        <el-select v-model="queryParams.siteCode"  @change="handleQuery" style="width: 200px">
+          <el-option
+            v-for="item in sites"
+            :key="item.siteId"
+            :label="item.siteCode"
+            :value="item.siteCode"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="广告名称" prop="advertiseName">
         <el-input
@@ -171,7 +173,10 @@
 
 <script setup name="Advertise">
 import { listAdvertise, getAdvertise, delAdvertise, addAdvertise, updateAdvertise } from "@/api/cms/advertise"
+import useCmsStore from '@/store/modules/cms'
 
+const cmsStore = useCmsStore()
+const { sites } = storeToRefs(cmsStore)
 const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
 

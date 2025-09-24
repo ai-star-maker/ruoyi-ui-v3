@@ -9,6 +9,15 @@ export function listTheme(query) {
   })
 }
 
+// 查询网站主题列表和配置参数
+export function listThemeAndConfig(query) {
+  return request({
+    url: '/cms/theme/config',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询网站主题详细
 export function getTheme(themeId) {
   return request({

@@ -228,7 +228,21 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  }
+  },
+  {
+    path: '/cms/themeConfig',
+    component: Layout,
+    hidden: true,
+    permissions: ['cms:theme:edit'],
+    children: [
+      {
+        path: 'index/:themeName',
+        component: () => import('@/views/cms/theme/config'),
+        name: 'ThemeConfig',
+        meta: { title: '主题配置', activeMenu: '/cms/theme' }
+      }
+    ]
+  },
 ]
 
 const router = createRouter({

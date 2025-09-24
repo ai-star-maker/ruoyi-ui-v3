@@ -1,12 +1,25 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="栏目编码" prop="categoryCode">
-        <el-input
+      <el-form-item label="站点编码" prop="siteCode" style="width: 250px">
+        <el-select v-model="queryParams.siteCode"  @change="getTreeselect" placeholder="请输入站点编码">
+          <el-option
+            v-for="site in sites"
+            :key="site.siteCode"
+            :label="site.siteCode"
+            :value="site.siteCode"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="栏目编码" prop="categoryCode" style="width: 250px">
+        <el-tree-select
           v-model="queryParams.categoryCode"
+          :data="categoryOptions"
+          :props="{ value: 'categoryCode', label: 'categoryName', children: 'children' }"
+          value-key="categoryCode"
           placeholder="请输入栏目编码"
-          clearable
-          @keyup.enter="handleQuery"
+          @node-click="categoryTreeClick"
+          check-strictly
         />
       </el-form-item>
       <el-form-item label="栏目名称" prop="categoryName">
@@ -17,14 +30,7 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="站点编码" prop="siteCode">
-        <el-input
-          v-model="queryParams.siteCode"
-          placeholder="请输入站点编码"
-          clearable
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
+      
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
@@ -60,11 +66,11 @@
       :default-expand-all="isExpandAll"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
+      <el-table-column label="站点编码" align="center" prop="siteCode" />
       <el-table-column label="栏目编码" prop="categoryCode" />
       <el-table-column label="父级编号" align="center" prop="parentCode" />
       <el-table-column label="栏目名称" align="center" prop="categoryName" />
       <el-table-column label="栏目ID" prop="categoryId" />
-      <el-table-column label="站点编码" align="center" prop="siteCode" />
       <el-table-column label="栏目图片" align="center" prop="image" width="100">
         <template #default="scope">
           <image-preview :src="scope.row.image" :width="50" :height="50"/>
@@ -96,9 +102,22 @@
       <el-form ref="categoryRef" :model="form" :rules="rules" label-width="100px" :disabled="formDisabled">
         <el-row>
         <el-col :span="12">
+          <el-form-item label="站点编码" prop="siteCode">
+            <el-select v-model="form.siteCode" @change="getTreeselect" placeholder="请输入站点编码">
+              <el-option
+                v-for="site in sites"
+                :key="site.siteCode"
+                :label="site.siteCode"
+                :value="site.siteCode"
+              ></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="栏目编码" prop="categoryCode" >
             <el-input v-model="form.categoryCode" placeholder="请输入栏目编码" />
           </el-form-item>
+          
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="父级编号" prop="parentCode">
             <el-tree-select
               v-model="form.parentCode"
@@ -107,15 +126,11 @@
               value-key="categoryCode"
               placeholder="请选择父级编号"
               check-strictly
+              @node-click="categoryTreeClick"
             />
           </el-form-item>
-        </el-col>
-        <el-col :span="12">
           <el-form-item label="栏目名称" prop="categoryName">
             <el-input v-model="form.categoryName" placeholder="请输入栏目名称" />
-          </el-form-item>
-          <el-form-item label="站点编码" prop="siteCode">
-            <el-input v-model="form.siteCode" placeholder="请输入站点编码" />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -225,7 +240,11 @@
 
 <script setup name="Category">
 import { listCategory, getCategory, delCategory, addCategory, updateCategory } from "@/api/cms/category"
+import useCmsStore from '@/store/modules/cms'
+import { getSiteCategoryTree } from "@/utils/cms"
 
+const cmsStore = useCmsStore()
+const { sites } = storeToRefs(cmsStore)
 const { proxy } = getCurrentInstance()
 const { sys_yes_no, sys_normal_disable } = proxy.useDict('sys_yes_no', 'sys_normal_disable')
 
@@ -278,15 +297,20 @@ function getList() {
 }
 
 /** 查询栏目管理下拉树结构 */
-function getTreeselect() {
-  listCategory().then(response => {
-    categoryOptions.value = []
-    const data = { categoryCode: 0, categoryName: '顶级节点', children: [] }
-    data.children = proxy.handleTree(response.data, "categoryCode", "parentCode")
-    categoryOptions.value.push(data)
-  })
+function getTreeselect(siteCode_) {
+  categoryOptions.value = []
+  categoryOptions.value.push(getSiteCategoryTree(siteCode_))
 }
-	
+
+/** 栏目树点击事件处理 */
+function categoryTreeClick(data, node, vm) {
+  console.log("categoryTreeClick", data, node, vm, data.siteCode)
+  if (data && data.siteCode) {
+    queryParams.value.siteCode = data.siteCode;
+    form.value.siteCode = data.siteCode;
+  }
+}
+
 // 取消按钮
 function cancel() {
   open.value = false
@@ -330,6 +354,7 @@ function reset() {
     extendD2: null
   }
   proxy.resetForm("categoryRef")
+  
 }
 
 /** 搜索按钮操作 */
@@ -340,6 +365,7 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   proxy.resetForm("queryRef")
+  getTreeselect()
   handleQuery()
 }
 
@@ -419,4 +445,6 @@ function handleDelete(row) {
 }
 
 getList()
+getTreeselect()
+
 </script>
