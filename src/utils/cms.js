@@ -57,6 +57,11 @@ export function setSiteInfo(siteCode) {
 export function getSiteInfo(siteCode) {
   const site = useCmsStore().sites.filter(site => site.siteCode == siteCode)[0];
   return site;
+} 
+
+export function getSiteTheme(siteCode) {
+  const site = useCmsStore().sites.filter(site => site.siteCode == siteCode)[0];
+  return site.theme;
 }
 
 export function getThemeInfo(themeName) {

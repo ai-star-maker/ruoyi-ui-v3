@@ -1,5 +1,5 @@
 <!--
-* {{siteCode}}.vue文件可以没有，考虑到网站可能的个性化设置，暂保留
+* 删除{{siteCode}}.vue文件，新增网站要增加次文件扩展性差，个性化设置在theme中定
 -->
 <template>
   <KeepAlive>
@@ -9,16 +9,18 @@
 
 <script setup name="WebIndex">
 import a404 from "@/views/error/404";
+import { getSiteTheme } from '@/utils/cms'
 
 const props = defineProps(['siteCode', 'theme'])
 const { siteCode, theme } = toRefs(props)
 let currentSite = ""
 
 watchEffect(() => {
-  let componentName = './' + siteCode.value + '.vue'
+  let themeName = getSiteTheme(siteCode.value)
   if (theme.value !== null && theme.value !== undefined && theme.value !== '') {
-    componentName = './theme/' + theme.value + '/index.vue'
+    themeName = theme.value
   }
+  let componentName = './theme/' + themeName + '/index.vue'
   console.log("componentName=%s siteCode=%s", componentName, siteCode.value)
 
   currentSite = defineAsyncComponent({

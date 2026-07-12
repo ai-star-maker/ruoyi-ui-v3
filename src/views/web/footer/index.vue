@@ -65,7 +65,7 @@ function goSite(site) {
     /**需要强制刷新，否则一些组件的信息还是以前的，因这些组件没有watch siteCode
      * 强制刷新的问题是：用浏览器回退则信息没有更新
      */
-    window.location.reload();  
+    //window.location.reload();  
   });
 }
 
