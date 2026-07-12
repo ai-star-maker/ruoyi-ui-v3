@@ -8,6 +8,7 @@ import { isRelogin } from '@/utils/request'
 import useUserStore from '@/store/modules/user'
 import useSettingsStore from '@/store/modules/settings'
 import usePermissionStore from '@/store/modules/permission'
+import useCmsStore from '@/store/modules/cms'
 import { initSite } from '@/utils/cms.js'
 
 NProgress.configure({ showSpinner: false })
@@ -19,10 +20,10 @@ const isWhiteList = (path) => {
 }
 
 router.beforeEach((to, from, next) => {
-  console.log("to.path=" + to.fullPath + ", isWhiteList=" + isWhiteList(to.path));
+  console.log("[Permission] to.path=" + to.fullPath + ", isWhiteList=" + isWhiteList(to.path));
   NProgress.start()
 
-  //初始化站点信息
+  // 初始化站点信息
   initSite(to.fullPath).then(res => {
     if (getToken()) {
       to.meta.title && useSettingsStore().setTitle(to.meta.title)
@@ -68,7 +69,12 @@ router.beforeEach((to, from, next) => {
         NProgress.done()
       }
     }
-  })   //end initSite();
+  }).catch(err => {
+    console.error('[Permission] Error initializing site:', err)
+    ElMessage.error('站点初始化失败')
+    next('/error')
+    NProgress.done()
+  })
 })
 
 router.afterEach(() => {
