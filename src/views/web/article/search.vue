@@ -1,142 +1,99 @@
-<!-- 
- * 搜索结果页面组件
- -->
+<!--
+* 搜索结果装配器组件
+* 职责：
+* 1. 根据当前主题动态加载对应的搜索结果组件 (search.vue)
+* 2. 如果主题没有自定义 search.vue，使用默认的
+* 3. 获取搜索结果并传递给主题组件
+* 
+* 使用方式：
+* - URL: /web/search/:searchKey
+* - 根据当前 store 中的 site.theme 自动选择相应的主题组件
+-->
 <template>
-  <el-container direction="vertical">
-    <my-header />
-    <el-main class='article-main-body'>
-      <image-preview :src="category.image" :preview-src-list="[]" class="elImage-no-preview elImage-category"/>
-      <div class="category-header" v-html="searchResult"> </div>
-      <div class="search-result"> 
-        <div class="search-resule-item">
-            <el-row v-for="(article, index) in articles" :key="index" :gutter="20">
-                <el-col :span="6" >
-                  <image-preview :src="article.image" :preview-src-list="[]" class="elImage-no-preview" style="height:150px" />
-                </el-col>
-                <el-col :span="18" >
-                  <router-link :to="`/web/article/${article.articleId}`" style="display:flex; width:100%"> 
-                    <el-col :span="16" >
-                      <div class="article-list-item2-wrap" v-html="highlineKey(article.title, searchKey)" />
-                    </el-col>
-                    <el-col :span="8"> {{parseTime(article.createTime, '{y}-{m}-{d}') }}</el-col>
-                  </router-link>
-                    <el-row ></el-row>
-                    <el-col :span="24">文章概要：
-                      <div class="article-desc" v-html="highlineKey(article.description, searchKey)"> </div>
-                    </el-col>
-                </el-col>
-            </el-row> 
-        </div>
-        <pagination
-            v-show="total>0"
-            :total="total"
-            v-model:page="queryParams.pageNum"
-            v-model:limit="queryParams.pageSize"
-            @pagination="getArticalList"
-            />
-    </div>
-    </el-main>
-    <my-footer/>
-  </el-container>
+  <Suspense>
+    <template #default>
+      <component 
+        v-if="currentSearch" 
+        :is="currentSearch" 
+        :searchKey="searchKey"
+        :articles="articles"
+        :total="total"
+        :siteCode="siteCode"
+      ></component>
+    </template>
+    <template #fallback>
+      <div class="search-loading">
+        <el-skeleton :rows="10" animated />
+      </div>
+    </template>
+  </Suspense>
 </template>
 
 <script setup name="ArticleSearch">
-import useCmsStore from '@/store/modules/cms';
-import MyHeader from '../header/header';
-import { getCategoryInfo, setSiteInfo} from '@/utils/cms.js';
-import MyFooter from '../footer/index.vue';
-import { listArticleByKeywords } from "@/api/cms/search";
-import { getCurrentInstance } from 'vue';
+import { defineAsyncComponent, shallowRef, ref, toRefs, onBeforeMount, watch } from 'vue'
+import useCmsStore from '@/store/modules/cms'
+import { listArticleByKeywords } from "@/api/cms/search"
+import { setSiteInfo } from "@/utils/cms"
+import { useTheme } from '@/composables/useTheme'
 
-const props = defineProps(['searchKey']) 
-
-const category = ref({ image: '' })
-const articles = ref([{ image: '' }])
-const categoryCode = ref("")
-const total = ref(0)
-const loading = ref(true)
-const imageHeight = ref(100+'%')
-const searchResult = ref("查询结果")
+const props = defineProps(['searchKey'])
+const { searchKey } = toRefs(props)
 const cmsStore = useCmsStore()
-const { proxy } = getCurrentInstance()
+const { loadThemeComponent } = useTheme()
 
+const currentSearch = shallowRef(null)
+const articles = ref([])
+const total = ref(0)
+const siteCode = ref('')
 const queryParams = ref({
   pageNum: 1,
   pageSize: 10,
-  siteCode: null,  //传递siteCode用于查询指定网站的文章 并插入cmsSearch
-  keyword: toRef(props, 'searchKey') //描述包含searchKey
+  keyword: searchKey.value,
+  isAudited: '0'
 })
+
+async function loadSearchResults() {
+  try {
+    // 1. 确保站点已初始化
+    siteCode.value = cmsStore.siteCode
+
+    // 2. 查询搜索结果
+    queryParams.value.keyword = searchKey.value
+    const res = await listArticleByKeywords(queryParams.value)
+    articles.value = res.rows || []
+    total.value = res.total || 0
+
+    // 3. 动态加载主题的 search 组件
+    const themeName = cmsStore.site?.theme || 'default'
+    console.log('[ArticleSearch] Loading search component for theme:', themeName)
+    
+    currentSearch.value = await loadThemeComponent('search', themeName)
+
+  } catch (err) {
+    console.error('[ArticleSearch] Error loading search results:', err)
+  }
+}
 
 onBeforeMount(() => {
-  let code = proxy.$route.query.siteCode;
-  if (code == null) code = cmsStore.siteCode;
-  else if (code !== cmsStore.siteCode) {
-    //如果首先打开search页需要初始化
-    setSiteInfo(code);
-  }
-  queryParams.value.siteCode = code;
-  getArticalList();
+  loadSearchResults()
 })
 
-watch(() => props.searchKey, (newVal, oldVal) => {
-  getArticalList();
-})
-
-function getArticalList() {
-  listArticleByKeywords(queryParams.value).then(res => {
-      if (res.total > 0) {
-        categoryCode.value = res.rows[0].categoryCode;
-        articles.value = res.rows;
-      }
-      else {
-        categoryCode.value = cmsStore.site.categories[0].categoryCode; 
-      }
-      category.value = getCategoryInfo(categoryCode.value);
-      total.value = res.total;
-      loading.value = false;
-      let result = "找到关于'"+ props.searchKey+"'结果"+total.value+"条";
-      searchResult.value = highlineKey(result, props.searchKey);
-  })
-}
-
-function highlineKey(oldText, oldKey) {
-  if (oldText == null) return;
-  let newString = "";
-  let startPos = 0;
-  let text = oldText.toUpperCase();
-  let key = oldKey.toUpperCase();
-  while (startPos < text.length) {
-    const index = text.indexOf(key, startPos);
-    if (index == -1) break;
-    newString = newString.concat(text.substring(startPos, index), 
-      "<span class='search-key'>" + key + "</span>");
-    startPos = index + key.length;
+// 监听搜索关键词变化
+watch(
+  () => searchKey.value,
+  () => {
+    queryParams.value.pageNum = 1
+    loadSearchResults()
   }
-  return newString.concat('', text.substring(startPos));
-}
- 
+)
 </script>
 
 <style scoped>
-@import '@/assets/styles/iconfont.css';
 @import '@/assets/styles/cms.css';
 
-
-.article-main-body :deep(.search-key) {
-  color: #c7000b;
+.search-loading {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
-
-.article-desc {
-  font-size: 15px;
-  padding: 10px 10px 10px 0;
-  line-height: 30px;
-}
-
-.el-row {
-  border-bottom: 1px solid #dedfe2;
-}
-.pagination-container {
-  margin-bottom: 30px;
-}
-
 </style>
