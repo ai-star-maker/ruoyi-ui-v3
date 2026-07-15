@@ -48,9 +48,6 @@ const { cms_friend_link } = proxy.useDict('cms_friend_link')
 
 const cmsStore = useCmsStore()
 const {siteCode, site, sites } = storeToRefs(cmsStore)
-// 站点表格数据
-const friendLinks = ref([])
-const friendLink = ref("")
 
 watch(siteCode, (New, Old) => {
   console.log("footer:sitecode Change:", New, Old)
@@ -58,8 +55,8 @@ watch(siteCode, (New, Old) => {
   site.value = cmsStore.site
 }, { immediate: true })
 
-function goSite(site) {
-  proxy.$router.push({
+async function goSite(site) {
+  await proxy.$router.push({
     path: getHomePath(site),
   }).then(() => {
     /**需要强制刷新，否则一些组件的信息还是以前的，因这些组件没有watch siteCode
