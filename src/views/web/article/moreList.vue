@@ -1,6 +1,6 @@
 <!-- 
  * 文章列表组件
- * 被articleMore调用，更多页中显示10个和分页
+ * 被theme/default/category调用，更多页中显示10个和分页
  -->
 <template>
     <div class="search-result"> 

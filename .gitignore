@@ -29,3 +29,5 @@ build/
 .env.staging
 .eslintignore
 .eslintrc.js
+
+opencode.local.jsonc

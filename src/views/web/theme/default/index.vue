@@ -14,30 +14,24 @@
   </el-container>
 </template>
 
-<script setup name="defaultIndex">
+<script setup name="ThemeDefaultIndex">
 import MyHeader from '@/views/web/header/header.vue';
 import WebAdvertise from '@/views/web/advertise';
 import ArticleIndex from '@/views/web/article/index';
 import MyFooter from '@/views/web/footer/index';
-import useCmsStore from '@/store/modules/cms'
+import { useThemeSite } from '@/views/web/composables/useThemeSite'
 
-const props = defineProps(['siteCode'])
-const categories = ref([])
+defineProps({
+  siteCode: {
+    type: String,
+    default: ''
+  }
+})
 
-//未用props的siteCode
-const cmsStore = useCmsStore()
-const { siteCode, site } = storeToRefs(cmsStore)
-categories.value = site.categories;
-
-watch(siteCode, (New, Old) => {
-  categories.value = cmsStore.site.categories;
-  console.log("default:watch.siteCode=" + siteCode.value + ",newVal=" + New + ",old=" + Old);
-}, { immediate: true })
-
+const { categories } = useThemeSite()
 </script>
 
 <style scoped>
-@import '@/assets/styles/cms.css' ;
 
 .main-body {
   height: 100%;
@@ -51,22 +45,3 @@ watch(siteCode, (New, Old) => {
 
 </style>
 
-<style>
-body {
-  --news-picture-width: 40%;
-  --news-list-width: 60%;
-  --pic-list-width: 33.3%;
-  --media-width: 768px;
-}
-
-@media screen and (max-width:768px) {
-  body {
-    --news-picture-width: 100%;
-    --news-list-width: 100%;
-    --pic-list-width: 100%
-  }
-}
-a:hover {
-  color: var(--hover-color); transition: all .6s
-}
-</style>

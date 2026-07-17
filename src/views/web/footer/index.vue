@@ -47,13 +47,7 @@ const { proxy } = getCurrentInstance()
 const { cms_friend_link } = proxy.useDict('cms_friend_link')
 
 const cmsStore = useCmsStore()
-const {siteCode, site, sites } = storeToRefs(cmsStore)
-
-watch(siteCode, (New, Old) => {
-  console.log("footer:sitecode Change:", New, Old)
-  siteCode.value = cmsStore.siteCode
-  site.value = cmsStore.site
-}, { immediate: true })
+const { site, sites } = storeToRefs(cmsStore)
 
 async function goSite(site) {
   await proxy.$router.push({

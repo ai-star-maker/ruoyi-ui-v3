@@ -25,6 +25,8 @@ Package manager is **yarn** (not npm/pnpm). No lint, typecheck, or test scripts 
 - **Standard RuoYi admin**: `src/views/{system,monitor,tool}/`, `src/api/{system,monitor,tool}/`
 - **CMS admin panel**: `src/views/cms/`, `src/api/cms/` — site/article/category/theme/tag/advertise management
 - **Public-facing pages**: `src/views/web/` — dynamically routed via `/web/:siteCode/:theme?`. Site info loaded from `src/store/modules/cms.js`.
+- **Theme system (v3)**: `src/views/web/theme/<themeName>/` — each theme has `config.json` (metadata) + template `.vue` files. Registry auto-discovers themes via `import.meta.glob` in `src/views/web/theme/registry.js`. Template fallback chain: `post` → `default` → cross-theme fallback to system `default` theme. Homepage uses `useThemedComponent('index')`, article detail uses `useThemedComponent('post')`.
+- **Composables**: `src/composables/useThemeSite.js` — shared site data access for all theme `index.vue` components (replaces duplicate `watch(siteCode)` in each theme). `src/composables/useThemedComponent.js` — unified async theme template loader with error/fallback handling.
 - **Entrypoint**: `src/main.js` — registers global components (Pagination, FileUpload, DictTag, etc.), plugins, directives.
 - **Auth/permission guard**: `src/permission.js` — runs before each route; white-lists `/web/*` paths from auth.
 - **API client**: `src/utils/request.js` — axios wrapper with token injection, auto-retry, download helper.
