@@ -47,6 +47,6 @@ body {
   }
 }
 a:hover {
-  color: var(--hover-color); transition: all .6s;
+  color: var(--brand-red); transition: all .6s;
 }
 </style>

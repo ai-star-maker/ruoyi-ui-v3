@@ -74,5 +74,32 @@ onBeforeMount(() => {
     bottom: -18px;
     right: 4px;
 }
+.article-list_news {
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+}
+
+/** 后边的要删掉 */
+.article-list-item1 {
+    width: var(--news-picture-width);
+    position: relative;
+}
+.article-list-item2 {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: var(--news-list-width); 
+    line-height: 56px;
+    padding-left: 30px;
+    border: 1px solid #dedfe2;
+}
+
+.article-list-item2-wrap {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 
 </style>

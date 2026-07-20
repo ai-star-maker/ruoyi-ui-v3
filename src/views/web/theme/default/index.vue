@@ -1,3 +1,13 @@
+<!--
+  default主题首页
+  <el-container>
+    <my-header>
+    <el-main>
+      <WebAdvertise>
+      <ArticleIndex>（新闻行+产品行） -> <ArticleList>(5行新闻)
+    <my-footer>
+-->
+
 <template>
   <el-container direction="vertical">
     <my-header />
@@ -5,7 +15,7 @@
       <WebAdvertise></WebAdvertise>
       <template v-for="(category, index) in categories" >
         <template v-if="category.inList === 'Y'">
-          <div class="category-header" :key="index+100"> {{category.categoryName}} </div>
+          <div class="cms-category-header" :key="index+100"> {{category.categoryName}} </div>
           <ArticleIndex :category-code="category.categoryCode" :showModes="category.showModes" :key="index"> </ArticleIndex>
         </template>
       </template>

@@ -29,8 +29,6 @@ const pageSize = ref(5)
 const { categoryCode, showModes } = toRefs(props)
 
 onBeforeMount(() => {
-    // const rect = this.$refs.mainBox.getBoundingClientRect()
-    // this.cHeight = rect.height
     if (showModes !== 'N') {
         getArticalList();
     }

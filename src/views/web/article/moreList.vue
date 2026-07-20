@@ -3,8 +3,8 @@
  * 被theme/default/category调用，更多页中显示10个和分页
  -->
 <template>
-    <div class="search-result"> 
-        <div class="search-resule-item">
+    <div class="cms-search-result"> 
+        <div class="cms-search-result-item">
         <el-row v-for="(article, index) in articles" :key="index" :gutter="20">
             <el-col :span="6" >
                 <image-preview :src="article.image" :preview-src-list="[]" class="elImage-no-preview" style="height:150px" />

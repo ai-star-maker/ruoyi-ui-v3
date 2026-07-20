@@ -4,11 +4,11 @@
 <template>
   <el-container direction="vertical">
     <my-header />
-    <el-main class='article-main-body'>
+    <el-main class='cms-page main'>
       <image-preview :src="category.image" :preview-src-list="[]" class="elImage-no-preview elImage-category"/>
-      <div class="category-header" v-html="searchResult"> </div>
-      <div class="search-result"> 
-        <div class="search-resule-item">
+      <div class="cms-category-header" v-html="searchResult"> </div>
+      <div class="cms-search-result"> 
+        <div class="cms-search-result-item">
             <el-row v-for="(article, index) in articles" :key="index" :gutter="20">
                 <el-col :span="6" >
                   <image-preview :src="article.image" :preview-src-list="[]" class="elImage-no-preview" style="height:150px" />
@@ -122,8 +122,8 @@ function highlineKey(oldText, oldKey) {
 @import '@/assets/styles/cms.css';
 
 
-.article-main-body :deep(.search-key) {
-  color: #c7000b;
+.cms-page.main :deep(.search-key) {
+  color: var(--brand-red);
 }
 
 .article-desc {

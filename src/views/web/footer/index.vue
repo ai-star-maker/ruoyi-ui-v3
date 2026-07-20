@@ -1,45 +1,50 @@
 <template>
-    <el-footer class='inline' height="160px">
-      <div class="friend-link"> 
-        <div style="padding:0 10px">友情链接: 
+  <el-footer class="cms-page footer-root" height="auto">
+    <div class="cms-container footer-columns">
+      <div class="footer-col">
+        <div class="footer-col-title">友情链接</div>
+        <div class="footer-line footer-linklist">
           <template v-for="(link, index) in cms_friend_link" :key="link.code">
-            <a :href="link.value" target="">
-              <span :key="link.code" >{{link.label}} &nbsp;
-                {{index !== cms_friend_link.length - 1 ? '|  ' : ''}}
-              </span>
-            </a> 
-          </template>
-        </div>
-          <!-- <el-select v-model="friendLink" placeholder="请选择链接">
-            <el-option
-              v-for="link in dict.type.cms_friend_link"
-              :key="link.value"
-              :label="link.label"
-              :value="link.value"
-            ></el-option>
-          </el-select> -->
-        <div class="switch-site">切换站点:
-          <template v-for="(site, index) in sites" :key="index">
-            <a >
-              <span :key="site.siteCode" @click="goSite(site)">
-                {{site.siteName}} &nbsp;{{index !== sites.length - 1 ? '|  ' : ''}}
+            <a :href="link.value" target="_blank">
+              <span :key="link.code">
+                {{ link.label }}{{ index !== cms_friend_link.length - 1 ? '  /  ' : '' }}
               </span>
             </a>
           </template>
         </div>
       </div>
-      <div>办公电话:{{site.phone}}  &nbsp;&nbsp;邮箱:<a href="mailto:site.email" >{{site.email}}</a> </div>
-      <div>办公地址:{{site.address}}</div>
-      <div>
-        <a href="https://beian.miit.gov.cn/">{{site.icp}}</a>&nbsp;&nbsp;
-        <a href="http://www.beian.gov.cn/portal/registerSystemInfo">{{site.registerNo}}</a>
+      
+      <div class="footer-col">
+        <div class="footer-col-title">切换站点</div>
+        <div class="footer-line footer-linklist">
+          <template v-for="(item, index) in sites" :key="index">
+            <a @click="goSite(item)">
+              <span :key="item.siteCode">
+                {{ item.siteName }}{{ index !== sites.length - 1 ? '  /  ' : '' }}
+              </span>
+            </a>
+          </template>
+        </div>
       </div>
-      <div>{{site.copyright}}</div>
-    </el-footer>
+
+      <div class="footer-col">
+        <div class="footer-col-title">联系方式</div>
+        <div class="footer-line">办公电话：{{ site.phone }}</div>
+        <div class="footer-line">邮箱：<a :href="`mailto:${site.email}`">{{ site.email }}</a></div>
+        <div class="footer-line">地址：{{ site.address }}</div>
+      </div>
+
+    </div>
+
+    <div class="footer-legal">
+      <span>{{ site.copyright }}</span>
+      <a href="https://beian.miit.gov.cn/">{{ site.icp }}</a>
+      <a href="http://www.beian.gov.cn/portal/registerSystemInfo">{{ site.registerNo }}</a>
+    </div>
+  </el-footer>
 </template>
 
 <script setup name="MyFooter">
-
 import useCmsStore from '@/store/modules/cms'
 import { getHomePath } from '@/utils/cms.js'
 
@@ -61,49 +66,86 @@ async function goSite(site) {
 }
 
 function goLink(link) {
-  //window.location.href = '/web/' + site.siteCode
   window.open(link); 
 }
 
 </script>
 
 <style scoped>
+@import '@/assets/styles/cms.css';
 
-.inline {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: #e6e6e6;
-  font-size: 14px;
-  line-height: 25px;
+.footer-root {
+  background-color: var(--brand-mist);
+  padding: 0;
 }
 
-.friend-link {
-  width: 100%;
-  height: 100%;
-  background-color: #f2f2f2;
+.footer-columns {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
   flex-wrap: wrap;
+  gap: 40px;
+  padding-top: var(--section-gap);
+  padding-bottom: 32px;
 }
 
-.switch-site {
-  padding:0 10px 0 40px;
+.footer-col {
+  flex: 1 1 240px;
+  min-width: 200px;
 }
 
-.el-footer {
-  padding: 0 0 0 0;
+.footer-col-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #3f3535;
+  margin-bottom: 16px;
+  padding-left: 12px;
+  border-left: 2px solid var(--brand-red);
 }
 
-@media screen and (max-width:768px) {
-  .friend-link {
-    flex-direction: column;
-  }
-  .switch-site {
-    padding:0 0px 0 0px;
+.footer-line {
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.footer-line a {
+  color: rgba(7, 7, 7, 0.62);
+  transition: color 0.2s ease;
+}
+
+.footer-line a:hover {
+  color: #4b4141;
+  cursor: pointer;
+}
+
+.footer-linklist a {
+  white-space: nowrap;
+}
+
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 6px 16px;
+  padding: 20px 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: var(--brand-line);
+  font-size: 12px;
+  justify-content: center;
+}
+
+.footer-legal a {
+  color: rgba(8, 8, 8, 0.4);
+}
+
+.footer-legal a:hover {
+  color: rgba(87, 81, 81, 0.7);
+}
+
+@media screen and (max-width: 768px) {
+  .footer-columns {
+    gap: 28px;
   }
 }
 

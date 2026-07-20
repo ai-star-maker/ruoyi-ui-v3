@@ -13,9 +13,9 @@
 <template>
   <el-container direction="vertical">
     <my-header />
-    <el-main class="article-main-body">
+    <el-main class="cms-page main">
       <image-preview :src="category.image" :preview-src-list="[]" class="elImage-no-preview elImage-category" />
-      <div class="category-header">{{ category.categoryName }}</div>
+      <div class="cms-category-header">{{ category.categoryName }}</div>
       <ArticleMoreList :category-code="categoryCode" :page-size="10" />
     </el-main>
     <my-footer />

@@ -13,10 +13,10 @@
 <template>
   <el-container direction="vertical">
     <my-header />
-    <el-main class="article-main-body">
+    <el-main class="cms-page main">
       <image-preview :src="category.image" :preview-src-list="[]" class="elImage-no-preview elImage-category" />
       <div class="article-box">
-        <div class="category-header">{{ article.title }}</div>
+        <div class="cms-category-header">{{ article.title }}</div>
         <div class="article-info">
           发布时间：{{ parseTime(article.createTime, '{y}-{m}-{d}') }}
           浏览次数：{{ article.articleCount?.views ?? 0 }}

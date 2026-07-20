@@ -1,7 +1,7 @@
 <template>
     <div> 
         <image-preview :src="cmsStore.site.logo" :preview-src-list="[]" 
-            class="elImage-no-preview-cursor-pointer logo" @click.native="goHome"/>
+            class="elImage-no-preview add-pointer logo" @click.native="goHome"/>
     </div>
 </template>
 

@@ -73,7 +73,7 @@ watch(siteCode, async (New, Old) => {
     font-size: 16px;
 }
 .el-menu-item:hover {
-    color: var(--hover-color) !important;    /*e73414 */
+    color: var(--brand-red) !important;   
     /* transition: all .2s;   */
 }
 

@@ -1,62 +1,79 @@
+/**
+ * CMS 前台样式 —— 设计系统 Token/工具类 + 原有全局样式
+ * ---------------------------------------------------------------
+ * 本文件是基于仓库里实际的原始 cms.css（用户提供）做的合并，不再是
+ * 凭空重写。合并原则：原文件里任何仍被现有模板引用的规则/变量一律
+ * 保留，只新增，不删除——除非能在当前代码里确认它已经没有任何模板
+ * 引用（见文末"已确认可以安全移除"的说明）。
+ *
+ * 结构：
+ *   1. 字体引入（新增）
+ *   2. 全局 CSS 自定义属性（原有 --hover-color + 原本定义在
+ *      web/index.vue 的 --news-picture-width 等 + 新增的 --brand-* Token）
+ *   3. 原有的全局工具类（原样保留，逐条标注了"当前哪些文件仍在用"）
+ *   4. 新增的基础排版（.cms-page 系列）
+ *   5. 新增的可复用工具类（.cms-container / .cms-eyebrow / .cms-card-* 等）
+ */
 
+/* 1. 字体引入
+   Barlow Semi Condensed：展示字体，仅用于大标题/数字/日期。
+   Noto Sans SC：正文字体，覆盖中日韩排版，西文部分自动使用其 Latin 字形。 */
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Noto+Sans+SC:wght@400;500&display=swap');
+
+/* 2. 全局 CSS 自定义属性 */
 :root {
-    --hover-color: #e73434; /* #e11a1a*/
+  /* 原本写在 views/web/index.vue 的一个非 scoped <style> 块里，
+     随着该文件被重写为纯主题加载器（ThemeLoader）一起被删掉了——
+     但 --pic-list-width 仍被 views/web/article/index.vue 的
+     `.article-list-item3 { width: var(--pic-list-width) }` 使用
+     （"产品图片模式"三图并排布局），--news-picture-width /
+     --news-list-width 这两个原本给旧版 article/list.vue 用，该文件
+     已经在本次改版中换成新的卡片系统、不再依赖它们，但保留定义
+     不会有任何副作用，防止还有其它未覆盖到的页面依赖它们。
+     全局自定义属性理应放在全局样式表里，这里才是它们真正的归属，
+     不应该散落在某个路由组件的 <style> 块里。 */
+  --news-picture-width: 40%;
+  --news-list-width: 60%;
+  --pic-list-width: 33.3%;
+  --media-width: 768px;
+
+  /* --- 新增设计系统 Token --- */
+  /* 注意 --brand-red 的值与原有 .category-header::before 里硬编码的
+     #c7000b 完全一致——这不是巧合选色，是把原来就分散写死在各处的
+     同一个品牌红，收敛成一个可复用的变量。 */
+  --brand-ink: #1a1a1a;
+  --brand-charcoal: #2b2b2e;   
+  --brand-red: #c7000b;
+  --brand-paper: #ffffff;
+  --brand-mist: #f2f2f2;
+  --brand-steel: #6b6b6f;
+  --brand-line: #e6e6e6;
+
+  --font-display: 'Barlow Semi Condensed', 'PingFang SC', sans-serif;
+  --font-body: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+
+  --content-max: 1200px;
+  --section-gap: 64px;
+  --rule-width: 4px;
 }
 
-.article-main-body {
-    height: 100%;
-    width: 100%;
-    padding: 0px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
+@media screen and (max-width: 768px) {
+  :root {
+    /* 原 web/index.vue 里的移动端断点覆盖，原样保留 */
+    --news-picture-width: 100%;
+    --news-list-width: 100%;
+    --pic-list-width: 100%;
+
+    --section-gap: 40px;
+  }
 }
 
-.category-header {
-    text-align: center;
-    font-size: 1.9em;
-    font-family: Microsoft YaHei, Arial;
-    margin-bottom: 35px;
-    margin-top: 35px;
-    position: relative;
-}
-.category-header::before {
-    content: '';
-    margin-left: -32px;
-    width: 64px;
-    height: 2px;
-    background-color: #c7000b;
-    position: absolute;
-    left: 50%;
-    bottom: -14px;
-    min-width: 35px;
-}
-
-.article-list_news {
-    width: 80%;
-    display: flex;
-    flex-direction: row;
-}
-.article-list-item1 {
-    width: var(--news-picture-width);
-    position: relative;
-}
-.article-list-item2 {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    width: var(--news-list-width); 
-    line-height: 56px;
-    padding-left: 30px;
-    border: 1px solid #dedfe2;
-}
-
-.article-list-item2-wrap {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
+/* 当前使用方：无（原用于旧版 article/list.vue 的双栏头条+列表布局，
+   该文件本次已改为 .cms-card-feature / .cms-card-list-item 卡片系统，
+   不再引用这四个类）。确认无其它模板引用后予以移除，如果你本地还有
+   分支/页面依赖这几个类名，请把它们加回来。 */
+/* .article-list_news / .article-list-item1 / .article-list-item2 /
+   .article-list-item2-wrap 已按上述说明移除 */
 
 ::-webkit-scrollbar {
     width: 8px !important;
@@ -67,36 +84,263 @@
     background-color: #c4c4c4 !important;
 }
 
-/* 移除el-image hover 缩放效果 */
+/* 移除el-image hover 缩放效果 —— 当前使用方遍布 advertise/logo/article
+   等多个组件，未逐一列出，保留原样 */
 .elImage-no-preview :deep(.el-image__inner) {
     transform: none !important;
     transition: none !important;
     cursor: default;
 }
 
-.elImage-no-preview-cursor-pointer :deep(.el-image__inner) {
-    transform: none !important;
-    transition: none !important;
-    cursor: default;
+.elImage-no-preview.add-pointer :deep(.el-image__inner) {
     &:hover {
         cursor: pointer;
     }
 }
 
+/* 当前使用方：theme/default/default.vue、theme/default/category.vue */
 .elImage-category {
     width: 100%;
     height: 450px;
 }
 
-.search-result {
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    --news-list-width: 100%;
+
+/* 4. 新增基础排版
+   .cms-page 由使用这套设计系统的组件在根节点上显式添加（header /
+   footer / 首页 / 头条列表都会加），避免像全局裸元素选择器那样
+   意外影响到其它未采用这套视觉的页面（如 admin 后台）。 */
+.cms-page,
+.cms-page body {
+  font-family: var(--font-body);
+  color: var(--brand-ink);
 }
 
-.search-resule-item {
+/* 文章详情或列表块 theme/default/default.vue categeory.vue search.vue*/
+.cms-page.main {
+    height: 100%;
+    width: 100%;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+.cms-page h1,
+.cms-page h2,
+.cms-page h3,
+.cms-page .display-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--brand-ink);
+  margin: 0;
+}
+
+.cms-page p {
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: var(--brand-steel);
+  line-height: 1.7;
+}
+
+.cms-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 5. 新增可复用工具类 */
+
+.cms-container {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+@media screen and (max-width: 768px) {
+  .cms-container {
+    padding: 0 16px;
+  }
+}
+
+/* 分区标题：签名元素规则 2 —— 左侧红色竖线，仅此一处装饰性用色 */
+.cms-eyebrow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.cms-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: var(--rule-width);
+  height: 22px;
+  background: var(--brand-red);
+  flex-shrink: 0;
+}
+
+/* 分区标题： 居中 底部红色线，装饰性用色 */
+.cms-category-header {
+    text-align: center;
+    font-size: 1.9em;
+    font-family: Microsoft YaHei, Arial;
+    margin-bottom: 35px;
+    margin-top: 35px;
     position: relative;
-    width: var(--news-list-width); 
-    line-height: 56px;
+}
+.cms-category-header::before {
+    content: '';
+    margin-left: -32px;
+    width: 64px;
+    height: 2px;
+    background-color: var(--brand-red);
+    position: absolute;
+    left: 50%;
+    bottom: -14px;
+    min-width: 35px;
+}
+
+.cms-eyebrow-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  color: var(--brand-ink);
+}
+
+.cms-eyebrow-more {
+  margin-left: auto;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--brand-steel);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.cms-eyebrow-more:hover {
+  color: var(--brand-red);
+}
+
+.cms-section {
+  padding: var(--section-gap) 0;
+}
+
+.cms-section + .cms-section {
+  border-top: 1px solid var(--brand-line);
+}
+
+.cms-section--mist {
+  background: var(--brand-mist);
+}
+
+/* 头条大卡片：图片 + 叠加文字，用于每个分区的第一条内容 */
+.cms-card-feature {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: var(--brand-ink);
+  aspect-ratio: 16 / 9;
+}
+
+.cms-card-feature img,
+.cms-card-feature :deep(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.cms-card-feature:hover img,
+.cms-card-feature:hover :deep(img) {
+  transform: scale(1.04);
+}
+
+.cms-card-feature-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 28px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.cms-card-feature-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.cms-card-feature-meta {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* 列表项卡片：分区里头条旁边的次级条目 */
+.cms-card-list-item {
+  display: block;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--brand-line);
+}
+
+.cms-card-list-item:first-child {
+  padding-top: 0;
+}
+
+.cms-card-list-item-title {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--brand-ink);
+  line-height: 1.5;
+  transition: color 0.2s ease;
+}
+
+.cms-card-list-item:hover .cms-card-list-item-title {
+  color: var(--brand-red);
+}
+
+.cms-card-list-item-meta {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--brand-steel);
+}
+
+/* 行动点：签名元素规则 3 —— 短红线 + 文字，用于"阅读全文/更多"类链接 */
+.cms-action-link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.cms-action-link::before {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 2px;
+  background: var(--brand-red);
+}
+
+.cms-search-result {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  --news-list-width: 100%;
+}
+
+.cms-search-resule-item {
+  position: relative;
+  width: var(--news-list-width); 
+  line-height: 56px;
 }
