@@ -2,33 +2,26 @@
  * 文章列表组件 
  * 首页中显示5个新闻
  -->
-<template>
-    <div class="article-list_news"> 
-        <div class="article-list-item1">
+ <template>
+    <div class="cms-page article-feature-grid"> 
+        <router-link :to="`/web/article/${articles[0].articleId}`" class="cms-card-feature feature-col">
             <image-preview :src="articles[0].image" :preview-src-list="[]" :height="imageHeight" />
-            <div class="article-list-item1-item">
-                <router-link :to="`/web/article/${articles[0].articleId}`">
-                    {{articles[0].title}} 
-                </router-link>
+            <div class="cms-card-feature-overlay">
+                <p class="cms-card-feature-title">{{ articles[0].title }}</p>
             </div>
-        </div>
-        <div class="article-list-item2">
+        </router-link>
+
+        <div class="list-col">
             <template v-for="(article, index) in articles" :key="index">
-                <el-row :gutter="20">
-                    <el-col :span=14 class="article-list-item2-wrap"> 
-                        <router-link :to="`/web/article/${article.articleId}`" > 
-                            {{article.title}} 
-                        </router-link> 
-                    </el-col>
-                    <el-col :span=10 > {{parseTime(article.createTime, '{y}-{m}-{d}') }}</el-col>
-                </el-row> 
-            </template>
-            <!--首页中显示MORE -->
-            <div class="article-list-item2-more">
-                <router-link :to="`/web/article/${articles[0].categoryCode}/more`"> 
-                    <a style="font-size:15px">MORE</a>
+                <router-link :to="`/web/article/${article.articleId}`" class="cms-card-list-item">
+                    <span class="cms-card-list-item-title">{{ article.title }}</span>
+                    <span class="cms-card-list-item-meta">{{ parseTime(article.createTime, '{y}-{m}-{d}') }}</span>
                 </router-link>
-            </div>
+            </template>
+
+            <router-link :to="`/web/article/${articles[0].categoryCode}/more`" class="cms-action-link more-link">
+                MORE
+            </router-link>
         </div>
     </div>
 </template>
@@ -51,55 +44,29 @@ onBeforeMount(() => {
 @import '@/assets/styles/cms.css';
 
 @media screen and (max-width: 768px) {
-    .article-list_news {
+    .article-feature-grid {
         flex-direction: column !important;
     }
-    .article-list-item1-item {
-        bottom: 10px;
-    }
 }
 
-.article-list-item1-item {
-    position: absolute;
-    padding: 10px;
-    color: white;
-    font-size: 17px;
-    margin-top: -40px;
-}
-
-.article-list-item2-more {
-    position: absolute;
-    color: #999; 
-    font-size:18px; 
-    bottom: -18px;
-    right: 4px;
-}
-.article-list_news {
+.article-feature-grid {
     width: 80%;
     display: flex;
-    flex-direction: row;
+    gap: 32px;
 }
 
-/** 后边的要删掉 */
-.article-list-item1 {
-    width: var(--news-picture-width);
-    position: relative;
+.feature-col {
+    flex: 0 0 58%;
 }
-.article-list-item2 {
+
+.list-col {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    position: relative;
-    width: var(--news-list-width); 
-    line-height: 56px;
-    padding-left: 30px;
-    border: 1px solid #dedfe2;
 }
 
-.article-list-item2-wrap {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+.more-link {
+    margin-top: 20px;
+    align-self: flex-end;
 }
-
-
 </style>

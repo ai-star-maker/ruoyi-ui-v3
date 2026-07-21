@@ -3,15 +3,13 @@
  * Product模式，三张图片
  -->
 <template>
-    <div ref="mainBox" class="mainBox">
+    <div class="mainBox">
         <template v-if="showModes === 'News'" > 
             <ArticleList :articles="articles" :pageSize="pageSize" > </ArticleList>
         </template>
         <div v-else class="article-list">
             <template v-for="(article, index) in articles.slice(0, 3)" :key="index">
-                <div class="article-list-item3" > 
-                    <image-preview :src="article.image" :preview-src-list="[]" />
-                </div>
+                <image-preview :src="article.image" :preview-src-list="[]" />
             </template>
         </div>
     </div>
@@ -72,10 +70,7 @@ watch(() => siteCode, (New, Old) => {
     width: 80%;
     display: flex;
     flex-direction: row;
+    gap:20px
 }
 
-.article-list-item3 {
-    width: var(--pic-list-width);
-    padding: 15px 15px 15px 15px; 
-}
 </style>

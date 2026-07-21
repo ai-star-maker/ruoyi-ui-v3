@@ -115,17 +115,6 @@
   color: var(--brand-ink);
 }
 
-/* 文章详情或列表块 theme/default/default.vue categeory.vue search.vue*/
-.cms-page.main {
-    height: 100%;
-    width: 100%;
-    padding: 0px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
-}
-
 .cms-page h1,
 .cms-page h2,
 .cms-page h3,
@@ -148,6 +137,17 @@
 .cms-page a {
   color: inherit;
   text-decoration: none;
+}
+
+/* 文章详情或列表块 theme/default/default.vue categeory.vue search.vue*/
+.cms-page.main {
+  height: 100%;
+  width: 100%;
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
 }
 
 /* 5. 新增可复用工具类 */
@@ -240,7 +240,6 @@
   position: relative;
   display: block;
   overflow: hidden;
-  background: var(--brand-ink);
   aspect-ratio: 16 / 9;
 }
 
@@ -263,7 +262,7 @@
   right: 0;
   bottom: 0;
   padding: 28px;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0) 100%);
+  /* background: linear-gradient(0deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0) 100%); */
 }
 
 .cms-card-feature-title {
@@ -282,7 +281,8 @@
 
 /* 列表项卡片：分区里头条旁边的次级条目 */
 .cms-card-list-item {
-  display: block;
+  display: flex;
+  justify-content: space-between;
   padding: 16px 0;
   border-bottom: 1px solid var(--brand-line);
 }

@@ -32,20 +32,6 @@ const { component, componentKey } = useThemedComponent('index', computed(() => p
 <style>
 @import '@/assets/styles/cms.css';
 
-body {
-  --news-picture-width: 40%;
-  --news-list-width: 60%;
-  --pic-list-width: 33.3%;
-  --media-width: 768px;
-}
-
-@media screen and (max-width:768px) {
-  body {
-    --news-picture-width: 100%;
-    --news-list-width: 100%;
-    --pic-list-width: 100%
-  }
-}
 a:hover {
   color: var(--brand-red); transition: all .6s;
 }
