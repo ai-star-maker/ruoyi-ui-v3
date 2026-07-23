@@ -61,107 +61,107 @@ const searchShow = ref(false)
 */
 
 .navbar-header {
---nav-fg-idle: var(--brand-steel);
---nav-fg-active: var(--brand-ink);
-position: relative;
-z-index: 10;
-width: 100%;
-background-color: var(--brand-paper);
-border-bottom: 1px solid var(--brand-line);
+  --nav-fg-idle: var(--brand-steel);
+  --nav-fg-active: var(--brand-ink);
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  background-color: var(--brand-paper);
+  border-bottom: 1px solid var(--brand-line);
 }
 
 .navbar-header--transparent {
---nav-fg-idle: rgba(255, 255, 255, 0.78);
---nav-fg-active: #ffffff;
-background-color: transparent;
-border-bottom: none;
+  --nav-fg-idle: rgba(255, 255, 255, 0.78);
+  --nav-fg-active: #ffffff;
+  background-color: transparent;
+  border-bottom: none;
 }
 
 .inline {
-display: flex;
-align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .navbar-right {
-margin-left: auto;
-height: 100%;
-display: flex;
-align-items: center;
-gap: 22px;
+  margin-left: auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 22px;
 }
 
 .navbar-right-item {
-display: inline-flex;
-align-items: center;
-color: var(--nav-fg-idle);
-font-size: 18px;
-cursor: pointer;
-transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  color: var(--nav-fg-idle);
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .navbar-right-item:hover {
 /* 悬停统一变为品牌红——签名元素的第二处出现，与导航激活下划线呼应,
    而不是简单跟随 --nav-fg-active（那样在白底导航下会变成不够显眼的深灰）。 */
-color: var(--brand-red);
+  color: var(--brand-red);
 }
 
 .navbar-avatar-link {
-line-height: 0;
+  line-height: 0;
 }
 
 .navbar-right-avatar {
-height: 32px;
-width: 32px;
-border-radius: 50%;
-display: block;
-border: 1px solid var(--brand-line);
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  display: block;
+  border: 1px solid var(--brand-line);
 }
 
 .transparent-menu,
 .original-menu {
-display: flex;
-align-items: center;
---el-menu-item-font-size: 15px;
---el-menu-bg-color: transparent;
+  display: flex;
+  align-items: center;
+  --el-menu-item-font-size: 15px;
+  --el-menu-bg-color: transparent;
 
-:deep(.el-menu) {
-  background-color: transparent;
-  min-width: 100%;
-  flex-wrap: nowrap;
-  font-family: var(--font-body);
-  font-weight: 500;
-}
+  :deep(.el-menu) {
+    background-color: transparent;
+    min-width: 100%;
+    flex-wrap: nowrap;
+    font-family: var(--font-body);
+    font-weight: 500;
+  }
 
-:deep(.el-menu--horizontal > .el-menu--collapse) {
-  display: none !important;
-}
+  :deep(.el-menu--horizontal > .el-menu--collapse) {
+    display: none !important;
+  }
 
-:deep(.el-menu-item),
-:deep(.el-sub-menu .el-sub-menu__title) {
-  color: var(--nav-fg-idle);
-  position: relative;
-}
+  :deep(.el-menu-item),
+  :deep(.el-sub-menu .el-sub-menu__title) {
+    color: var(--nav-fg-idle);
+    position: relative;
+  }
 
-:deep(.el-menu-item:hover),
-:deep(.el-sub-menu .el-sub-menu__title:hover) {
-  background-color: transparent !important;
-  color: var(--brand-red);
-}
+  :deep(.el-menu-item:hover),
+  :deep(.el-sub-menu .el-sub-menu__title:hover) {
+    background-color: transparent !important;
+    color: var(--brand-red);
+  }
 
-:deep(.el-menu-item.is-active) {
-  color: var(--nav-fg-active);
-  background-color: transparent !important;
-}
+  :deep(.el-menu-item.is-active) {
+    color: var(--nav-fg-active);
+    background-color: transparent !important;
+  }
 
-/* 签名元素规则 1：唯一固定出现的红线——当前激活栏目下方的细线 */
-:deep(.el-menu-item.is-active)::after {
-  content: '';
-  position: absolute;
-  left: 20px;
-  right: 20px;
-  bottom: 0;
-  height: 2px;
-  background: var(--brand-red);
-}
+  /* 签名元素规则 1：唯一固定出现的红线——当前激活栏目下方的细线 */
+  :deep(.el-menu-item.is-active)::after {
+    content: '';
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 0;
+    height: 2px;
+    background: var(--brand-red);
+  }
 }
 </style>

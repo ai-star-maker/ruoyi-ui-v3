@@ -11,12 +11,19 @@
   避免每个模板各自实现一遍 getCategoryInfo + watch。
 -->
 <template>
-  <el-container direction="vertical">
+  <el-container direction="vertical" class="cms-page">
     <my-header />
-    <el-main class="cms-page main">
-      <image-preview :src="category.image" :preview-src-list="[]" class="elImage-no-preview elImage-category" />
-      <div class="cms-category-header">{{ category.categoryName }}</div>
-      <ArticleMoreList :category-code="categoryCode" :page-size="10" />
+    <el-main class="category-detail">
+      <div class="category-hero">
+        <image-preview :src="category.image" :preview-src-list="[]" class="elImage-no-preview elImage-category" />
+      </div>
+
+      <div class="cms-container">
+        <div class="cms-eyebrow" style="margin-top: 12px;">
+          <h2 class="cms-eyebrow-title">{{ category.categoryName }}</h2>
+        </div>
+        <ArticleMoreList :category-code="categoryCode" :page-size="10" />
+      </div>
     </el-main>
     <my-footer />
   </el-container>
@@ -40,6 +47,20 @@ const category = useCategoryInfo(categoryCode)
 </script>
 
 <style scoped>
-@import '@/assets/styles/iconfont.css';
 @import '@/assets/styles/cms.css';
+@import '@/assets/styles/iconfont.css';
+
+.category-detail {
+  padding: 0;
+}
+
+.category-hero {
+  width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .category-hero :deep(.elImage-category) {
+    height: 240px;
+  }
+}
 </style>

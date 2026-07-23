@@ -1,7 +1,8 @@
 <!-- 
- * 文章更多列表组件 首页中点击新闻的MORE、menu中的栏目，调用此组件
+ * 栏目的文章列表组件 首页中点击新闻的MORE、menu中的栏目，调用此组件动态加载category.vue
  * 路由：/web/article/:categoryCode/more
-   现在统一走 useThemedComponent('category')，规则与 'post' 完全一致：
+
+   统一走 useThemedComponent('category')，规则与 'post' 完全一致：
     - 主题有 category.vue      -> 用它
     - 主题没有，但有 default.vue -> 回退到 default.vue
     - 都没有                    -> 回退到系统默认主题
