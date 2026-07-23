@@ -18,11 +18,11 @@ export function initSite(path) {
           }
         }
         
-        //theme预览时 /web/site_code/theme_name 设定站点
-        if (paths.length == 4 && paths[1] == "web") {
+        //theme预览时 /web/site_code/theme_name 设定站点+或者/web/site_code
+        if ((paths.length == 3 || paths.length == 4) && paths[1] == "web") {
           let site2 = getSiteInfo(paths[2])
           let theme2 = getThemeInfo(paths[3])
-          if (site2 && theme2 && paths[2] != cmsStore.siteCode) {
+          if (site2 && paths[2] != cmsStore.siteCode) {
             console.log("theme preview set siteCode = ", paths[2])
             setSiteInfo(site2.siteCode)
           }
