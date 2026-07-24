@@ -11,44 +11,37 @@
                   一次只讲一件事，适合品牌/产品展示类站点。
 -->
 <template>
-  <el-container direction="vertical" class="cms-page">
+<el-container direction="vertical" class="cms-page">
     <my-header :is-transparent="true" class="butter-style" />
 
     <WebAdvertise :height="'100vh'" />
 
     <el-main class="main-body">
-      <section class="intro-band" v-if="site.title || site.description">
-        <div class="cms-container intro-inner">
-          <h2 class="intro-title">{{ site.title || site.siteName }}</h2>
-          <p class="intro-desc">{{ site.description }}</p>
-        </div>
-      </section>
-
-      <section
+    <section
         v-for="(item, index) in showcaseItems"
         :key="item.category.categoryCode"
         class="showcase-row"
-        :class="{ 'showcase-row--reverse': index % 2 === 1, 'showcase-row--mist': index % 2 === 1 }"
-      >
+        :class="{ 'showcase-row--reverse': index % 2 === 1 }"
+    >
         <router-link :to="`/web/article/${item.article.articleId}`" class="showcase-media">
-          <image-preview :src="item.article.image" :preview-src-list="[]" class="elImage-no-preview" height="100%" />
+        <image-preview :src="item.article.image" :preview-src-list="[]" class="elImage-no-preview" height="100%" />
         </router-link>
 
         <div class="showcase-copy">
-          <div class="cms-eyebrow showcase-eyebrow">
+        <div class="cms-eyebrow showcase-eyebrow">
             <span class="cms-eyebrow-title showcase-eyebrow-title">{{ item.category.categoryName }}</span>
-          </div>
-          <h2 class="showcase-title">{{ item.article.title }}</h2>
-          <p class="showcase-desc">{{ item.article.description }}</p>
-          <router-link :to="`/web/article/${item.article.articleId}`" class="cms-action-link">
-            了解更多
-          </router-link>
         </div>
-      </section>
+        <h2 class="showcase-title">{{ item.article.title }}</h2>
+        <p class="showcase-desc">{{ item.article.description }}</p>
+        <router-link :to="`/web/article/${item.article.articleId}`" class="cms-action-link">
+            了解更多
+        </router-link>
+        </div>
+    </section>
     </el-main>
 
     <my-footer />
-  </el-container>
+</el-container>
 </template>
 
 <script setup name="ThemeButterfly">
@@ -60,16 +53,16 @@ import { useThemeSite } from '@/views/web/composables/useThemeSite'
 
 // siteCode 由 ThemeLoader 传入，仅作展示/埋点用途，实际数据走 useThemeSite()。
 defineProps({
-  siteCode: {
+siteCode: {
     type: String,
     default: ''
-  }
+}
 })
 
-const { site, categories } = useThemeSite()
+const { categories } = useThemeSite()
 
 const visibleCategories = computed(() =>
-  categories.value.filter(category => category.inList === 'Y')
+categories.value.filter(category => category.inList === 'Y')
 )
 
 const showcaseItems = ref([])
@@ -80,18 +73,18 @@ const showcaseItems = ref([])
 // 完全不同，勉强复用反而需要在共享组件里加分支逻辑，不如themes各自
 // 按自己的版式取数据更清楚。
 async function loadShowcase() {
-  const results = await Promise.all(
+const results = await Promise.all(
     visibleCategories.value.map(async (category) => {
-      const res = await listArticle({
+    const res = await listArticle({
         categoryCode: category.categoryCode,
         isAudited: '0',
         pageNum: 1,
         pageSize: 1
-      })
-      return { category, article: res.rows?.[0] }
     })
-  )
-  showcaseItems.value = results.filter(item => item.article)
+    return { category, article: res.rows?.[0] }
+    })
+)
+showcaseItems.value = results.filter(item => item.article)
 }
 
 watch(visibleCategories, loadShowcase, { immediate: true })
@@ -101,114 +94,118 @@ watch(visibleCategories, loadShowcase, { immediate: true })
 @import '@/assets/styles/cms.css';
 
 .main-body {
-  height: 100%;
-  width: 100%;
-  padding: 0px;
+height: 100%;
+width: 80%;
+padding: 0px;
 }
 
 /* 透明导航悬浮在 Hero 图上——position:absolute 让它脱离文档流，
-   不把下面的 WebAdvertise 顶下去；轻微的黑色蒙层只是为了保证文字/
-   图标在任意一张轮播图上都还读得清楚，颜色本身由 header.vue 内部的
-   --nav-fg-idle / --nav-fg-active 统一处理，这里不用再强行覆盖文字色。 */
+    不把下面的 WebAdvertise 顶下去；轻微的黑色蒙层只是为了保证文字/
+    图标在任意一张轮播图上都还读得清楚，颜色本身由 header.vue 内部的
+    --nav-fg-idle / --nav-fg-active 统一处理，这里不用再强行覆盖文字色。 */
 .butter-style {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  /* background-color: rgba(0, 0, 0, 0.15); */
-}
-
-.intro-band {
-  padding: var(--section-gap) 0;
-  text-align: center;
-}
-
-.intro-inner {
-  max-width: 720px;
-}
-
-.intro-title {
-  font-size: 30px;
-  margin-bottom: 16px;
-}
-
-.intro-desc {
-  font-size: 16px;
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+/* background-color: rgba(0, 0, 0, 0.15); */
 }
 
 .showcase-row {
-  display: flex;
-  min-height: 480px;
+display: flex;
+align-items: center;
+gap: 48px;
+padding: 64px 0;
+border-top: 1px solid var(--brand-line);
+}
+
+/* 修复记录：原来 Hero 下面接一个"站点简介带"，去掉之后 Hero（100vh
+    通栏大图）直接接第一个展示板块，两者中间原本靠简介带撑开的呼吸感
+    没了。Hero 本身的强对比已经足够构成一次视觉断点，不需要再加一条
+    分隔线（那样反而会显得突兀，像不小心多出来的一道线），只需要把
+    第一个板块的顶部留白单独放大，替代原来简介带承担的"缓冲区"作用。 */
+.showcase-row:first-of-type {
+border-top: none;
+padding-top: 96px;
 }
 
 .showcase-row--reverse {
-  flex-direction: row-reverse;
+flex-direction: row-reverse;
 }
 
-.showcase-row--mist {
-  background: var(--brand-mist);
-}
+/* 修复记录：原来偶数行用 --brand-mist（浅灰）打底做交替节奏，问题是
+    如果可见栏目数量是偶数，"最后一行"恰好落在浅灰这一档，而它下面
+    紧接着就是页脚（深灰 --brand-charcoal）——两块颜色本身并不相同，
+    但在两者之间没有任何间距/分隔线的情况下（见下面新增的 padding +
+    border-top），灰接灰会被一眼看成"连成一片"。与其去赌交替次数的
+    奇偶性会不会撞上这个情况，不如直接去掉这个交替底色：分区节奏改成
+    完全依赖"图文左右交替 + 间距 + 发丝线"，不再依赖背景色变化，这样
+    不管有多少个栏目，都不会再出现"和页脚糊在一起"的情况。 */
 
 .showcase-media {
-  flex: 0 0 50%;
-  display: block;
-  overflow: hidden;
+/* 从占据整行 50% 宽度、且拉伸到整行高度，改为固定比例的较小图块：
+    宽度收窄到约三分之二（50% -> 33%），并用 aspect-ratio 代替
+    "height:100% 撑满行高"，让图片大小不再和行高绑在一起，两者
+    现在是各自独立可控的两个变量，而不是改一个就影响另一个。 */
+flex: 0 0 33%;
+aspect-ratio: 4 / 3;
+display: block;
+overflow: hidden;
+border-radius: 4px;
 }
 
 .showcase-media :deep(.el-image) {
-  width: 100%;
-  height: 100%;
-  display: block;
+width: 100%;
+height: 100%;
+display: block;
 }
 
 .showcase-media :deep(.el-image__inner) {
-  object-fit: cover;
+object-fit: cover;
 }
 
 .showcase-copy {
-  flex: 0 0 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 56px 72px;
+flex: 1;
+padding: 0 8px;
 }
 
 .showcase-eyebrow-title {
-  font-size: 15px;
-  color: var(--brand-steel);
+font-size: 15px;
+color: var(--brand-steel);
 }
 
 .showcase-title {
-  font-size: 28px;
-  line-height: 1.3;
-  margin: 4px 0 16px;
+font-size: 28px;
+line-height: 1.3;
+margin: 4px 0 16px;
 }
 
 .showcase-desc {
-  margin-bottom: 24px;
-  max-width: 440px;
-}
-
-:deep(.search-box) {
-  padding: 5px 80px 0 20px !important;
-  background-color: rgba(0, 0, 0, 0) !important;
+margin-bottom: 24px;
+max-width: 520px;
 }
 
 @media screen and (max-width: 768px) {
-  .showcase-row,
-  .showcase-row--reverse {
+.showcase-row,
+.showcase-row--reverse {
     flex-direction: column;
-    min-height: 0;
-  }
+    align-items: stretch;
+    gap: 20px;
+    padding: 40px 0;
+}
 
-  .showcase-media {
-    flex: 0 0 auto;
-    height: 260px;
-  }
+.showcase-row:first-of-type {
+    padding-top: 56px;
+}
 
-  .showcase-copy {
+.showcase-media {
     flex: 0 0 auto;
-    padding: 32px 24px;
-  }
+    aspect-ratio: 16 / 9;
+    border-radius: 0;
+}
+
+.showcase-copy {
+    padding: 0 24px;
+}
 }
 </style>
