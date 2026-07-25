@@ -105,23 +105,7 @@ export const constantRoutes = [
     meta: { title: 'main index'}
   },
   */
- /*
-  {
-    path: '/web/main',
-    component: () => import('@/views/web/main'),
-    hidden: true,  
-    name: 'webmain',
-    meta: { title: 'main index'}
-  },
-
-  {
-    path: '/web/sub1',
-    component: () => import('@/views/web/sub1'), 
-    hidden: true,  
-    name: 'websub1',
-    meta: { title: 'sub1 index'}
-  },
-  */
+ 
   {
     path: '/web/:siteCode/:theme?',
     component: () => import('@/views/web/index'), 

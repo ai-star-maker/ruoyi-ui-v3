@@ -53,16 +53,15 @@ import { useThemeSite } from '@/views/web/composables/useThemeSite'
 
 // siteCode 由 ThemeLoader 传入，仅作展示/埋点用途，实际数据走 useThemeSite()。
 defineProps({
-siteCode: {
-    type: String,
-    default: ''
-}
+    siteCode: {
+        type: String,
+        default: ''
+    }
 })
 
 const { categories } = useThemeSite()
-
 const visibleCategories = computed(() =>
-categories.value.filter(category => category.inList === 'Y')
+    categories.value.filter(category => category.inList === 'Y')
 )
 
 const showcaseItems = ref([])
@@ -73,18 +72,18 @@ const showcaseItems = ref([])
 // 完全不同，勉强复用反而需要在共享组件里加分支逻辑，不如themes各自
 // 按自己的版式取数据更清楚。
 async function loadShowcase() {
-const results = await Promise.all(
-    visibleCategories.value.map(async (category) => {
-    const res = await listArticle({
-        categoryCode: category.categoryCode,
-        isAudited: '0',
-        pageNum: 1,
-        pageSize: 1
-    })
-    return { category, article: res.rows?.[0] }
-    })
-)
-showcaseItems.value = results.filter(item => item.article)
+    const results = await Promise.all(
+        visibleCategories.value.map(async (category) => {
+        const res = await listArticle({
+            categoryCode: category.categoryCode,
+            isAudited: '0',
+            pageNum: 1,
+            pageSize: 1
+        })
+        return { category, article: res.rows?.[0] }
+        })
+    )
+    showcaseItems.value = results.filter(item => item.article)
 }
 
 watch(visibleCategories, loadShowcase, { immediate: true })
@@ -94,9 +93,10 @@ watch(visibleCategories, loadShowcase, { immediate: true })
 @import '@/assets/styles/cms.css';
 
 .main-body {
-height: 100%;
-width: 80%;
-padding: 0px;
+  height: 100%;
+  width: 80%;
+  padding: 0px;
+  margin: 0 auto;
 }
 
 /* 透明导航悬浮在 Hero 图上——position:absolute 让它脱离文档流，
@@ -104,11 +104,11 @@ padding: 0px;
     图标在任意一张轮播图上都还读得清楚，颜色本身由 header.vue 内部的
     --nav-fg-idle / --nav-fg-active 统一处理，这里不用再强行覆盖文字色。 */
 .butter-style {
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-/* background-color: rgba(0, 0, 0, 0.15); */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    /* background-color: rgba(0, 0, 0, 0.15); */
 }
 
 .showcase-row {

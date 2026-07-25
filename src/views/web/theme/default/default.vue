@@ -96,6 +96,7 @@ const category = useCategoryInfo(computed(() => article.value.categoryCode))
   font-size: 34px;
   line-height: 1.25;
   margin-bottom: 16px;
+  text-align: center;
 }
 
 .article-meta {
@@ -105,6 +106,7 @@ const category = useCategoryInfo(computed(() => article.value.categoryCode))
   font-family: var(--font-body);
   font-size: 13px;
   color: var(--brand-steel);
+  justify-content: center;
 }
 
 .article-meta-dot {
@@ -125,7 +127,7 @@ const category = useCategoryInfo(computed(() => article.value.categoryCode))
 }
 
 .cms-page :deep(h3) {
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   letter-spacing: 0em !important;
 }
 

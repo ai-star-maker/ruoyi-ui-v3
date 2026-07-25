@@ -1,50 +1,59 @@
 <!-- 
  * 搜索结果页面组件
+ * ---------------------------------------------------------------
+ * 套用已经确立的内容页版式——头图 + .cms-container + .cms-eyebrow 
+ *（见 theme/default/default.vue、category.vue）
+ * 文章列表行复用 moreList.vue 
  -->
-<template>
-  <el-container direction="vertical">
+ <template>
+  <el-container direction="vertical" class="cms-page">
     <my-header />
-    <el-main class='cms-page main'>
-      <image-preview :src="category.image" :preview-src-list="[]" class="elImage-no-preview elImage-category"/>
-      <div class="cms-category-header" v-html="searchResult"> </div>
-      <div class="cms-search-result"> 
-        <div class="cms-search-result-item">
-            <el-row v-for="(article, index) in articles" :key="index" :gutter="20">
-                <el-col :span="6" >
-                  <image-preview :src="article.image" :preview-src-list="[]" class="elImage-no-preview" style="height:150px" />
-                </el-col>
-                <el-col :span="18" >
-                  <router-link :to="`/web/article/${article.articleId}`" style="display:flex; width:100%"> 
-                    <el-col :span="16" >
-                      <div class="article-list-item2-wrap" v-html="highlineKey(article.title, searchKey)" />
-                    </el-col>
-                    <el-col :span="8"> {{parseTime(article.createTime, '{y}-{m}-{d}') }}</el-col>
-                  </router-link>
-                    <el-row ></el-row>
-                    <el-col :span="24">文章概要：
-                      <div class="article-desc" v-html="highlineKey(article.description, searchKey)"> </div>
-                    </el-col>
-                </el-col>
-            </el-row> 
+    <el-main class="search-detail">
+      <div class="search-hero">
+        <image-preview :src="category.image" :preview-src-list="[]" class="elImage-no-preview elImage-category" />
+      </div>
+
+      <div class="cms-container">
+        <div class="cms-eyebrow">
+          <h2 class="cms-eyebrow-title" v-html="searchResult"></h2>
         </div>
-        <pagination
-            v-show="total>0"
+
+        <div class="cms-row-list">
+          <router-link
+            v-for="(article, index) in articles"
+            :key="index"
+            :to="`/web/article/${article.articleId}`"
+            class="cms-row-item"
+          >
+            <div class="cms-row-thumb">
+              <image-preview :src="article.image" :preview-src-list="[]" class="elImage-no-preview" height="140px" />
+            </div>
+            <div class="cms-row-body">
+              <h3 class="cms-row-title" v-html="highlineKey(article.title, props.searchKey)"></h3>
+              <p class="cms-row-desc" v-html="highlineKey(article.description, props.searchKey)"></p>
+              <span class="cms-row-date">{{ parseTime(article.createTime, '{y}-{m}-{d}') }}</span>
+            </div>
+          </router-link>
+
+          <pagination
+            v-show="total > 0"
             :total="total"
             v-model:page="queryParams.pageNum"
             v-model:limit="queryParams.pageSize"
             @pagination="getArticalList"
-            />
-    </div>
+          />
+        </div>
+      </div>
     </el-main>
-    <my-footer/>
+    <my-footer />
   </el-container>
 </template>
 
 <script setup name="ArticleSearch">
 import useCmsStore from '@/store/modules/cms';
-import MyHeader from '../header/header';
+import MyHeader from '@/views/web/header/header.vue';
+import MyFooter from '@/views/web/footer/index.vue';
 import { getCategoryInfo, setSiteInfo} from '@/utils/cms.js';
-import MyFooter from '../footer/index.vue';
 import { listArticleByKeywords } from "@/api/cms/search";
 import { getCurrentInstance } from 'vue';
 
@@ -118,25 +127,24 @@ function highlineKey(oldText, oldKey) {
 </script>
 
 <style scoped>
-@import '@/assets/styles/iconfont.css';
 @import '@/assets/styles/cms.css';
+@import '@/assets/styles/iconfont.css';
 
+.search-detail {
+  padding: 0;
+}
 
-.cms-page.main :deep(.search-key) {
+.search-hero {
+  width: 100%;
+}
+
+.search-detail :deep(.search-key) {
   color: var(--brand-red);
 }
 
-.article-desc {
-  font-size: 15px;
-  padding: 10px 10px 10px 0;
-  line-height: 30px;
+@media screen and (max-width: 768px) {
+  .search-hero :deep(.elImage-category) {
+    height: 240px;
+  }
 }
-
-.el-row {
-  border-bottom: 1px solid #dedfe2;
-}
-.pagination-container {
-  margin-bottom: 30px;
-}
-
 </style>
