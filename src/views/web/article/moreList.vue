@@ -8,7 +8,7 @@
       <router-link
         v-for="(article, index) in articles"
         :key="index"
-        :to="`/web/article/${article.articleId}`"
+        :to="article?.articleId ? `/web/article/${article.articleId}` : ''"
         class="cms-row-item"
       >
           <div class="cms-row-thumb">

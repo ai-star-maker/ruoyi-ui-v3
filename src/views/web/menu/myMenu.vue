@@ -1,5 +1,6 @@
 <template>
-    <el-menu default-active="0" v-if="menuVisible" :mode="mode" text-color="#000000" class="header-menu" :ellipsis="false">
+    <el-menu default-active="0" v-if="menuVisible" :mode="mode" class="header-menu" 
+        :ellipsis="false" :popper-class="isTransparent ? '': 'header-submenu-popper--transparent'">
         <template v-for="(menu, index) in menus" >
             <template v-if="hasChild(menu.categoryCode).length > 0">
                 <el-sub-menu v-if="menu.inMenu === 'Y'" index="menu.categoryCode" :key="index">
@@ -27,6 +28,7 @@ import { getCurrentInstance, onBeforeMount } from 'vue';
 const props = defineProps(['mode']) 
 const menus = ref([])
 const menuVisible = ref(true)
+const isTransparent = ref(false)
 const cmsStore = useCmsStore()
 const { proxy } = getCurrentInstance()
    

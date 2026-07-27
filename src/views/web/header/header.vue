@@ -75,6 +75,9 @@ const searchShow = ref(false)
   --nav-fg-active: #ffffff;
   background-color: transparent;
   border-bottom: none;
+  :deep(.navbar-right-item) {
+    color: var(--nav-fg-idle) !important; 
+  }
 }
 
 .inline {
@@ -93,8 +96,8 @@ const searchShow = ref(false)
 .navbar-right-item {
   display: inline-flex;
   align-items: center;
-  color: var(--nav-fg-idle);
   font-size: 18px;
+  color: inherit;
   cursor: pointer;
   transition: color 0.2s ease;
 }
@@ -117,12 +120,21 @@ const searchShow = ref(false)
   border: 1px solid var(--brand-line);
 }
 
-.transparent-menu,
+/** 透明菜单 
+ * 
+ */
+.transparent-menu {
+  --el-menu-bg-color: rgba(0, 0, 0, 0);
+  --el-menu-text-color: #ffffff;
+  --el-menu-hover-text-color: var(--brand-red);
+}
+
 .original-menu {
   display: flex;
   align-items: center;
   --el-menu-item-font-size: 15px;
   --el-menu-bg-color: transparent;
+  --el-menu-hover-text-color: var(--brand-red);
 
   :deep(.el-menu) {
     background-color: transparent;

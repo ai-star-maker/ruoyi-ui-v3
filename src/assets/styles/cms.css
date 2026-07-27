@@ -414,3 +414,39 @@
     }
   }
   
+/* header-submenu-popper相关样式是修改el-menu子菜单的背景色
+ * 弹出层是 Element Plus 的 popper，默认会 teleport 到
+ * document.body，物理上已经不是 header.vue 里任何元素的后代了，
+ * 所以只能用*全局*
+ */
+  /* 弹出层外层容器：半透明深色背板 + 磨砂玻璃效果 */
+.header-submenu-popper--transparent {
+  /* background: rgba(26, 26, 26, 0.82) !important; */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Element Plus 会在弹出层外层再包一层 popper 小箭头，同样需要跟着变色 */
+.header-submenu-popper--transparent .el-popper__arrow::before {
+  background: rgba(26, 26, 26, 0.82) !important;
+  border-color: rgba(26, 26, 26, 0.82) !important;
+}
+
+/* 弹出层里实际的 <ul class="el-menu el-menu--popup">，本身也有自己的
+   背景色，需要显式设成透明，否则会盖住外层容器的半透明背板 */
+.header-submenu-popper--transparent .el-menu--popup {
+  background: transparent !important;
+}
+
+.header-submenu-popper--transparent .el-menu-item {
+  color: rgba(255, 255, 255, 0.85) !important;
+  background: transparent !important;
+}
+
+.header-submenu-popper--transparent .el-menu-item:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
